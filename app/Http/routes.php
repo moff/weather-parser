@@ -15,8 +15,8 @@
 // put all your REST routes inside api-group
 Route::group(['prefix' => 'api'], function() {
     Route::resource('employees', 'EmployeesController');
+    Route::resource('days', 'DaysController');
 });
-
 
 // this route is for Angular and it should be placed after all other back end routes
 // just keep it at the bottom

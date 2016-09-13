@@ -1,10 +1,12 @@
 <?php
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Day extends Model
+class Day extends BaseModel
 {
+    protected $transformerClass = 'App\Transformers\DayTransformer';
+    
     protected $fillable = [
         'date',
         'sunset',
@@ -15,6 +17,6 @@ class Day extends Model
     
     public function forecasts()
     {
-        return $this->hasMany('App\Forecast');
+        return $this->hasMany('App\Models\Forecast');
     }
 }
