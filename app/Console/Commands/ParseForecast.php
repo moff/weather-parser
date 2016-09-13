@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use duzun\hQuery;
 use Carbon\Carbon;
+use App\Day;
 
 class ParseForecast extends Command
 {
@@ -63,47 +64,41 @@ class ParseForecast extends Command
         $date = Carbon::now();
         
         // delete data for next days - we're going to get updated forecasts
-        // Day::where('date','>=', $date->toDateString())->delete();
+        Day::where('date','>=', $date->toDateString())->delete();
         
         foreach ($dayRows as $key => $row) {
-            $this->info('--- ' . $date->toDateString());
             
-            if ($sunrise = $row->find($selectors['sunrise'])) $this->info($sunrise->text());
-            if ($sunset = $row->find($selectors['sunset'])) $this->info($sunset->text());
-            if ($moon = $row->find($selectors['moon'])) $this->info($moon->attr('title'));
-            if ($geomagnetic = $row->find($selectors['geomagnetic'])) $this->info($geomagnetic->text());
+            // day data
+            $data = [];
+            $data['date'] = $date->toDateString();
             
-            $data = [
-                'sunset' => $sunset,
-                'sunrise' => $sunrise,
-                'moon' => $moon,
-                'geomagnetic' => $geomagnetic,
-            ];
+            if ($sunrise = $row->find($selectors['sunrise']))           $data['sunrise'] = $sunrise->text();
+            if ($sunset = $row->find($selectors['sunset']))             $data['sunset'] = $sunset->text();
+            if ($moon = $row->find($selectors['moon']))                 $data['moon'] = $moon->attr('title');
+            if ($geomagnetic = $row->find($selectors['geomagnetic']))   $data['geomagnetic'] = $geomagnetic->text();
             
             // create day
-            // $day = Day::create($data);
+            $day = Day::create($data);
             
             $forecasts = [];
             $forecastRows = $row->find($selectors['forecastRows']);
             
             foreach ($forecastRows as $key => $row) {
-                $rowData = [];
+                $data = [];
                 
-                if ($daytime = $row->find($selectors['daytime'])) $rowData['daytime'] = $daytime->text();
-                if ($temperature = $row->find($selectors['temperature'])) $rowData['temperature'] = $temperature->text();
-                if ($condition = $row->find($selectors['condition'])) $rowData['condition'] = $condition->text();
-                if ($pressure = $row->find($selectors['pressure'])) $rowData['pressure'] = $pressure->text();
-                if ($humidity = $row->find($selectors['humidity'])) $rowData['humidity'] = $humidity->text();
-                if ($windDirection = $row->find($selectors['windDirection'])) $rowData['windDirection'] = $windDirection->text();
-                if ($windSpeed = $row->find($selectors['windSpeed'])) $rowData['windSpeed'] = $windSpeed->text();
+                if ($daytime = $row->find($selectors['daytime']))               $data['daytime'] = $daytime->text();
+                if ($temperature = $row->find($selectors['temperature']))       $data['temperature'] = $temperature->text();
+                if ($condition = $row->find($selectors['condition']))           $data['condition'] = $condition->text();
+                if ($pressure = $row->find($selectors['pressure']))             $data['pressure'] = $pressure->text();
+                if ($humidity = $row->find($selectors['humidity']))             $data['humidity'] = $humidity->text();
+                if ($windDirection = $row->find($selectors['windDirection']))   $data['windDirection'] = $windDirection->text();
+                if ($windSpeed = $row->find($selectors['windSpeed']))           $data['windSpeed'] = $windSpeed->text();
                 
-                $forecasts[] = $rowData;
+                $forecasts[] = $data;
             }
             
             // save related data
-            // $day->forecasts()->create($forecasts);
-            
-            $this->info(var_dump($forecasts));
+            $day->forecasts()->createMany($forecasts);
             
             $date->addDay();
         }
