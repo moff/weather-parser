@@ -80,8 +80,6 @@ class ParseForecast extends Command
                 'geomagnetic' => $geomagnetic,
             ];
             
-            
-            
             // create day
             // $day = Day::create($data);
             
