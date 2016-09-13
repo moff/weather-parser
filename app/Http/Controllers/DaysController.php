@@ -17,4 +17,15 @@ class DaysController extends Controller
     {
         return Day::all();
     }
+    
+    /**
+     * Show day
+     *
+     * @param integer $id Day ID
+     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model
+     */
+    public function show($id)
+    {
+        return Day::findOrFail($id);
+    }
 }

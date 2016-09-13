@@ -15,12 +15,10 @@ export class HomeComponent implements OnInit {
     constructor(private _dayService: DayService) {}
     
     ngOnInit(): void {
-        this._sub = this._dayService.getdays()
+        this._sub = this._dayService.getDays()
             .subscribe(
                 days => { 
-                    setTimeout(() => {
-                        this.days = days; 
-                    }, 1500);
+                    this.days = days; 
                 },
                 error => this.errorMessage = <any>error);
     }

@@ -1,3 +1,30 @@
-<p>This is Home Component</p>
-<p><a routerLink='/features'>Go to features</a></p>
+<div class="page-header">
+    <h1>Погода в Москве.</h1>
+</div>
 
+<table *ngIf='days.length' class='table'>
+    <thead>
+        <tr>
+            <th>Дата</th>
+            <th>Температура днём</th>
+            <th>Температура ночью</th>
+            <th>Восход</th>
+            <th>Закат</th>
+            <th>Магнитное поле</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor='let day of days'>
+            <td>{{ day.date }}</td>
+            <td>{{ day.forecasts[1].temperature }}</td>
+            <td>{{ day.forecasts[3].temperature }}</td>
+            <td>{{ day.sunset }}</td>
+            <td>{{ day.sunrise }}</td>
+            <td>{{ day.geomagnetic }}</td>
+            <td>
+                <a class="btn btn-warning"
+                   [routerLink]="['/day', day.id]">Подробнее</a>
+            </td>
+        </tr>
+    </tbody>
+</table>

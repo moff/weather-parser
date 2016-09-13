@@ -27,7 +27,7 @@ export class DayService {
     getDay(id: number): Observable<IDay> {
         return this._http.get(this._daysUrl + '/' + id)
             .map((response: Response) => <IDay>response.json())
-            .do(data => console.log('Employee: ' + JSON.stringify(data)))
+            .do(data => console.log('Day: ' + JSON.stringify(data)))
             .catch(this.handleError);
     }
     
