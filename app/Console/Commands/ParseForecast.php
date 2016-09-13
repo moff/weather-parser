@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use duzun\hQuery;
 use Carbon\Carbon;
-use App\Day;
+use App\Models\Day;
 
 class ParseForecast extends Command
 {
@@ -72,6 +72,8 @@ class ParseForecast extends Command
             $data = [];
             $data['date'] = $date->toDateString();
             
+            $this->info('Parsing data for ' . $data['date']) . '...';
+            
             if ($sunrise = $row->find($selectors['sunrise']))           $data['sunrise'] = $sunrise->text();
             if ($sunset = $row->find($selectors['sunset']))             $data['sunset'] = $sunset->text();
             if ($moon = $row->find($selectors['moon']))                 $data['moon'] = $moon->attr('title');
@@ -102,5 +104,7 @@ class ParseForecast extends Command
             
             $date->addDay();
         }
+        
+        $this->info('Parsed!');
     }
 }
